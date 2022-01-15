@@ -23,7 +23,7 @@ const styles = {
 
 function NFTBalance() {
   const { data: NFTBalances, getNFTBalances } = useNFTBalances();
-  const { Moralis, chainId } = useMoralis();
+  const { Moralis, chainId, isAuthenticated } = useMoralis();
   const [visible, setVisibility] = useState(false);
   const [receiverToSend, setReceiver] = useState(null);
   const [amountToSend, setAmount] = useState(null);
@@ -67,9 +67,12 @@ function NFTBalance() {
   };
 
   console.log("NFTBalances", NFTBalances);
+
+
+
   return (
     <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
-      <h1>🖼 NFT Balances</h1>
+      {isAuthenticated ? <div><h1>🖼 NFT Balances</h1>
       <div style={styles.NFTs}>
         <Skeleton loading={!NFTBalances?.result}>
           {NFTBalances?.result &&
@@ -122,7 +125,8 @@ function NFTBalance() {
         {nftToSend && nftToSend.contract_type === "erc1155" && (
           <Input placeholder="amount to send" onChange={(e) => handleChange(e)} />
         )}
-      </Modal>
+      </Modal></div> : <div><h1>Sign In with Metamask</h1></div>}
+
     </div>
   );
 }
