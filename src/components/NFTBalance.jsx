@@ -25,22 +25,13 @@ function NFTBalance() {
   const { data: NFTBalances, getNFTBalances } = useNFTBalances();
   const { Moralis, chainId } = useMoralis();
   const [visible, setVisibility] = useState(false);
-  //const [nfts, setNFTs] = useState(null)
   const [receiverToSend, setReceiver] = useState(null);
   const [amountToSend, setAmount] = useState(null);
   const [nftToSend, setNftToSend] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const { verifyMetadata } = useVerifyMetadata();
 
-  const fetchNFTs = useCallback(async () => {
-    let response = await getNFTBalances({ params: { chain: "0x13881" } })
-    console.log("NFT response: ", response)
-    //setNFTs(response)
-  })
 
-  // useEffect(() => {
-  //   fetchNFTs()
-  // }, [NFTBalances])
 
   async function transfer(nft, amount, receiver) {
     const options = {
@@ -79,7 +70,6 @@ function NFTBalance() {
   return (
     <div style={{ padding: "15px", maxWidth: "1030px", width: "100%" }}>
       <h1>🖼 NFT Balances</h1>
-      {NFTBalances && NFTBalances.total === 0 ? <div><h1>No results</h1></div> : <div><h1>Results</h1></div>}
       <div style={styles.NFTs}>
         <Skeleton loading={!NFTBalances?.result}>
           {NFTBalances?.result &&
