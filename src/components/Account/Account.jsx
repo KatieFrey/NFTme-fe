@@ -22,6 +22,7 @@ const styles = {
   },
   text: {
     color: "#21BF96",
+    marginRight: "10px"
   },
   connector: {
     alignItems: "center",
@@ -47,14 +48,14 @@ function Account() {
   const { authenticate, isAuthenticated, account, chainId, logout } = useMoralis();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
-  
+
   if (!isAuthenticated || !account) {
     return (
       <>
         <div
           onClick={() => setIsAuthModalVisible(true)}
         >
-          <p style={styles.text}>Authenticate</p>
+          <p style={styles.text}>Login with Metamask</p>
         </div>
         <Modal
           visible={isAuthModalVisible}

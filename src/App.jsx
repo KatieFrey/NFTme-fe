@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import Home from "components/Home";
 import Account from "components/Account/Account";
 import Chains from "components/Chains";
 import NFTBalance from "components/NFTBalance";
@@ -58,7 +59,6 @@ const App = ({ isServerInfo }) => {
       <Router>
         <Header style={styles.header}>
           <Image />
-          <MenuItems />
           <div style={styles.headerRight}>
             <Chains />
             <NativeBalance />
@@ -68,12 +68,15 @@ const App = ({ isServerInfo }) => {
 
         <div style={styles.content}>
           <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
             <Route path="/nftBalance">
               <NFTBalance />
             </Route>
-            <Route path="/">
+            {/* <Route path="/">
               <Redirect to="/nftBalance" />
-            </Route>
+            </Route> */}
           </Switch>
         </div>
       </Router>
