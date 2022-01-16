@@ -70,6 +70,7 @@ function Home() {
   const [pagesCount, setPagesCount] = useState(1);
   const [offset, setOffset] = useState(0)
   const [totalElementsCount, setTotalElementsCount] = useState(0)
+  const [champion, setChampion] = useState(null);
   const { verifyMetadata } = useVerifyMetadata()
 
   const elementsPerPage = 1;
@@ -95,6 +96,7 @@ function Home() {
     console.log("totalElements: ", totalElementsCount)
     console.log("pagesCount: ", pagesCount)
     console.log("currentPageElement: ", currentPageElement)
+    console.log("champion: ", champion)
 
     let nftData = await data.map((nft) => {
         return [nft.token_address, nft.token_id];
@@ -126,7 +128,7 @@ function Home() {
       acquireTradeData(NFTBalances.result)
     }
 
-  }, [isAuthenticated, NFTBalances])
+  }, [isAuthenticated, NFTBalances, champion])
 
   return (
     <div style={styles.welcome}>
@@ -232,6 +234,7 @@ function Home() {
                   return (
                     <Card
                       hoverable
+                      onClick={() => setChampion(nft)}
                       actions={[
                         <Tooltip title="View On Blockexplorer">
                           <FileSearchOutlined
