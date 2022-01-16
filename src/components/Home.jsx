@@ -63,20 +63,22 @@ function Home() {
     Moralis
   } = useMoralis()
   const { data: NFTBalances, getNFTBalances } = useNFTBalances()
+  const [isNftSelectionModalVisible, setIsNftSelectionModalVisible] = useState(false)
   const [isBattleModalVisible, setIsBattleModalVisible] = useState(false)
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false)
   const { verifyMetadata } = useVerifyMetadata()
+  let myNft = 'test'
 
   const acquireTradeData = async (data) => {
     let tradeHash = {}
     console.log("Data: ", data)
     let nftData = await data.map((nft) => {
-        return [nft.token_address, nft.token_id];
+      return [nft.token_address, nft.token_id];
     });
 
-    for(const nftAddress of nftData) {
+    for (const nftAddress of nftData) {
       console.log("NFT Address Array: ", nftAddress)
-      const options = { address: nftAddress[0]};
+      const options = { address: nftAddress[0] };
       const response = await Moralis.Web3API.token.getNFTTrades(options);
 
       // const options = {method: 'GET'};
@@ -93,10 +95,9 @@ function Home() {
 
   }
 
-
   useEffect(() => {
 
-    if(NFTBalances && NFTBalances.result){
+    if (NFTBalances && NFTBalances.result) {
       acquireTradeData(NFTBalances.result)
     }
 
@@ -104,18 +105,21 @@ function Home() {
 
   return (
     <div style={styles.welcome}>
-      <Title>GAME TITLE</Title>
+      <Title>🔥🔥🔥 NFT Battle Cryptography Game 🔥🔥🔥</Title>
       <Title style={styles.content} level={3}>
-        Welcome Crypto Pioneer!
+        🤖 ETHGlobal 2022 NFT Hackathon 🤖
       </Title>
-      <Title style={{ maxWidth: '50vw' }} level={4}>
-        Welcome Crypto Pioneer! It’s time to put those hard earned NFT’s of
-        yours to good use. Grab an NFT from your wallet and take it into battle
-        to prove your superiority once and for all!
+      <Title level={4}>
+        It’s time to put those hard earned NFT’s of
+        yours to use!
+        <br></br>
+        ⚔️ Grab an NFT from your wallet and take it into battle ⚔️
+        <br></br>
+        🛡️ Prove your superiority once and for all! 🤺
       </Title>
       <div style={styles.loginButton}>
         {isAuthenticated ? (
-          <Button onClick={() => setIsBattleModalVisible(true)} type="primary">
+          <Button onClick={() => setIsNftSelectionModalVisible(true)} type="primary">
             START A BATTLE
           </Button>
         ) : (
@@ -170,7 +174,7 @@ function Home() {
       </Modal>
 
       <Modal
-        visible={isBattleModalVisible}
+        visible={isNftSelectionModalVisible}
         footer={null}
         onCancel={() => setIsBattleModalVisible(false)}
         bodyStyle={{
@@ -178,7 +182,7 @@ function Home() {
           fontSize: '17px',
           fontWeight: '500',
         }}
-        style={{ fontSize: '16px', fontWeight: '500', width: '340px'}}
+        style={{ fontSize: '16px', fontWeight: '500', width: '340px' }}
 
       >
         <div
@@ -190,7 +194,7 @@ function Home() {
             fontSize: '20px',
           }}
         >
-          Select an NFT to use for your battle:
+          💥 Select your NFT to use in battle 💥
         </div>
         <div>
           <Skeleton loading={!NFTBalances?.result}>
@@ -202,7 +206,7 @@ function Home() {
                   return (
                     <Card
                       hoverable
-                      actions={[
+                      /*actions={[
                         <Tooltip title="View On Blockexplorer">
                           <FileSearchOutlined
                             onClick={() => console.log('1')}
@@ -216,7 +220,7 @@ function Home() {
                             onClick={() => console.log('3')}
                           />
                         </Tooltip>,
-                      ]}
+                      ]}*/
                       style={{ width: 240, border: '2px solid #e7eaf3' }}
                       cover={
                         <Image
@@ -228,12 +232,40 @@ function Home() {
                         />
                       }
                       key={index}
+                      onClick={() => {
+                        setIsNftSelectionModalVisible(false);
+                        setIsBattleModalVisible(true);
+                      }}
                     >
                       <Meta title={nft.name} description={nft.token_address} />
                     </Card>
                   )
                 })}
             </Carousel>
+          </Skeleton>
+        </div>
+      </Modal>
+      <Modal visible={isBattleModalVisible} footer={null}
+        onCancel={() => setIsBattleModalVisible(false)} bodyStyle={{
+          padding: '15px',
+          fontSize: '17px',
+          fontWeight: '500',
+        }}
+        style={{ fontSize: '16px', fontWeight: '500', width: '340px' }}>
+        <div
+          style={{
+            padding: '10px',
+            display: 'flex',
+            justifyContent: 'center',
+            fontWeight: '700',
+            fontSize: '20px',
+          }}
+        >
+          💥 Get ready to battle 💥
+        </div>
+        <div>
+          <Skeleton loading={!NFTBalances?.result}>
+            <p>test</p>
           </Skeleton>
         </div>
       </Modal>
