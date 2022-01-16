@@ -8,7 +8,7 @@ import {
   Button,
   Modal,
   Skeleton,
-  Carousel,
+  Pagination,
 } from 'antd'
 import {
   FileSearchOutlined,
@@ -65,17 +65,43 @@ function Home() {
   const { data: NFTBalances, getNFTBalances } = useNFTBalances()
   const [isBattleModalVisible, setIsBattleModalVisible] = useState(false)
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false)
+  const [currentPageElement, setCurrentPageElements] = useState([]);
+  const [allElements, setAllElements] = useState([]);
+  const [pagesCount, setPagesCount] = useState(1);
+  const [offset, setOffset] = useState(0)
+  const [totalElementsCount, setTotalElementsCount] = useState(0)
   const { verifyMetadata } = useVerifyMetadata()
+
+  const elementsPerPage = 1;
+
+  const handlePageClick = (pageNumber) => {
+    const currentPage = pageNumber - 1;
+    const newOffset = currentPage * elementsPerPage;
+    setOffset(newOffset);
+    const newElements = allElements.slice(offset, offset + elementsPerPage);
+    setCurrentPageElements(newElements);
+  }
 
   const acquireTradeData = async (data) => {
     let tradeHash = {}
     console.log("Data: ", data)
+    setAllElements(data);
+    setTotalElementsCount(data.length)
+    setPagesCount(Math.ceil(totalElementsCount/elementsPerPage));
+    let current = allElements.slice(offset, offset + elementsPerPage);
+    setCurrentPageElements([...currentPageElement, current])
+
+    console.log("allElements: ", allElements)
+    console.log("totalElements: ", totalElementsCount)
+    console.log("pagesCount: ", pagesCount)
+    console.log("currentPageElement: ", currentPageElement)
+
     let nftData = await data.map((nft) => {
         return [nft.token_address, nft.token_id];
     });
 
     for(const nftAddress of nftData) {
-      console.log("NFT Address Array: ", nftAddress)
+      //console.log("NFT Address Array: ", nftAddress)
       const options = { address: nftAddress[0]};
       const response = await Moralis.Web3API.token.getNFTTrades(options);
 
@@ -88,7 +114,7 @@ function Home() {
       // const response = await axios.get(`https://fcpsgxa2ssb6.usemoralis.com:2053/server/nft/${nftAddress[0]}/trades`);
 
 
-      console.log("response: ", response)
+      //console.log("response: ", response)
     }
 
   }
@@ -177,8 +203,12 @@ function Home() {
           padding: '15px',
           fontSize: '17px',
           fontWeight: '500',
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center"
         }}
-        style={{ fontSize: '16px', fontWeight: '500', width: '340px'}}
+        style={{ fontSize: '16px', fontWeight: '500', maxWidth: '60em'}}
 
       >
         <div
@@ -194,9 +224,9 @@ function Home() {
         </div>
         <div>
           <Skeleton loading={!NFTBalances?.result}>
-            <Carousel autoplay>
+
               {NFTBalances?.result &&
-                NFTBalances.result.map((nft, index) => {
+                currentPageElement.map((nft, index) => {
                   //Verify Metadata
                   nft = verifyMetadata(nft)
                   return (
@@ -217,7 +247,7 @@ function Home() {
                           />
                         </Tooltip>,
                       ]}
-                      style={{ width: 240, border: '2px solid #e7eaf3' }}
+                      style={{ width: "240px", border: '2px solid #e7eaf3' }}
                       cover={
                         <Image
                           preview={false}
@@ -233,7 +263,16 @@ function Home() {
                     </Card>
                   )
                 })}
-            </Carousel>
+                <div>
+              <Pagination
+                defaultCurrent={1}
+                onChange={handlePageClick}
+                size="small"
+                total={totalElementsCount}
+                pageSize={elementsPerPage}
+                showSizeChanger={false}
+                />
+                </div>
           </Skeleton>
         </div>
       </Modal>
