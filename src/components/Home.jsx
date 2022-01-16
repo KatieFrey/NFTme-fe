@@ -71,9 +71,20 @@ function Home() {
   const [offset, setOffset] = useState(0)
   const [totalElementsCount, setTotalElementsCount] = useState(0)
   const [champion, setChampion] = useState(null);
+  const [user, setUser] = useState(null);
   const { verifyMetadata } = useVerifyMetadata()
 
   const elementsPerPage = 1;
+
+  // let currentUser = Moralis.User.enableUnsafeCurrentUser()
+  // console.log("Current User: ", currentUser);
+
+  const fetchUser = async () => {
+    let currentUser = await Moralis.User.current();
+    //currentUser.set("apple", 2);
+    console.log("CurrentUser -----------: ", currentUser)
+    return currentUser;
+  }
 
   const handlePageClick = (pageNumber) => {
     const currentPage = pageNumber - 1;
@@ -92,11 +103,11 @@ function Home() {
     let current = allElements.slice(offset, offset + elementsPerPage);
     setCurrentPageElements([...currentPageElement, current])
 
-    console.log("allElements: ", allElements)
-    console.log("totalElements: ", totalElementsCount)
-    console.log("pagesCount: ", pagesCount)
-    console.log("currentPageElement: ", currentPageElement)
-    console.log("champion: ", champion)
+    // console.log("allElements: ", allElements)
+    // console.log("totalElements: ", totalElementsCount)
+    // console.log("pagesCount: ", pagesCount)
+    // console.log("currentPageElement: ", currentPageElement)
+    // console.log("champion: ", champion)
 
     let nftData = await data.map((nft) => {
         return [nft.token_address, nft.token_id];
@@ -121,6 +132,15 @@ function Home() {
 
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      let currentUser = fetchUser();
+      setUser(currentUser);
+      console.log("User: ", user)
+    }, 5000)
+
+  }, [])
+
 
   useEffect(() => {
 
@@ -128,7 +148,13 @@ function Home() {
       acquireTradeData(NFTBalances.result)
     }
 
-  }, [isAuthenticated, NFTBalances, champion])
+
+    //console.log("CurrentUser: ", currentUser);
+    //currentUser.set("apple", 2)
+    //setUser(currentUser);
+    //console.log("Current User: ", user)
+
+  }, [isAuthenticated, NFTBalances, champion, user])
 
   return (
     <div style={styles.welcome}>
